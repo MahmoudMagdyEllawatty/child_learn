@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@drawable/bg"
+    tools:context=".SelectTypeActivity">
+
+    <TextView
+        android:layout_marginTop="80dp"
+        android:layout_gravity="center"
+        android:text="Please,Select User Type"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <android.widget.Button
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:id="@+id/btnAdmin"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text=" Admin"
+        android:textAllCaps="false"
+        android:padding="10dp"
+        android:background="@drawable/main_round_btn"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:drawableStart="@mipmap/ic_admin"
+        android:drawablePadding="8dp"/>
+
+    <android.widget.Button
+        android:layout_gravity="center"
+        android:id="@+id/btnParent"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text=" Parent"
+        android:textAllCaps="false"
+        android:padding="10dp"
+        android:background="@drawable/secondary_round_btn"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:drawableStart="@mipmap/ic_parent"
+        android:drawablePadding="8dp"
+        android:layout_marginTop="10dp"/>
+
+    <android.widget.Button
+        android:layout_gravity="center"
+        android:id="@+id/btnChild"
+        android:layout_width="200dp"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content"
+        android:text=" Child"
+        android:padding="10dp"
+        android:background="@drawable/child_round_btn"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:drawableStart="@mipmap/ic_child"
+        android:drawablePadding="8dp"
+        android:layout_marginTop="10dp"/>
+
+
+
+</LinearLayout>

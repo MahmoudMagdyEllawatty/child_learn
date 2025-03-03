@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.LearnChild" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/secondary</item>
+    </style>
+
+    <style name="Theme.LearnChild" parent="Base.Theme.LearnChild" />
+</resources>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+
+
+
+    <LinearLayout
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:orientation="vertical"
+        tools:context=".activities.student.StudentLettersLearningActivity">
+
+
+
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:id="@+id/rel"
+            android:layout_width="match_parent"
+            android:layout_height="340dp">
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="330dp" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/previous"
+                android:drawableEnd="@drawable/ic_prev"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/previous"
+                android:textSize="18sp"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                app:backgroundTint="@color/red"
+                app:cornerRadius="5dp">
+            </com.google.android.material.button.MaterialButton>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/next"
+                android:drawableEnd="@drawable/ic_next1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/next"
+                android:textSize="18sp"
+                android:textAllCaps="false"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                app:backgroundTint="@color/green"
+                app:cornerRadius="5dp">
+            </com.google.android.material.button.MaterialButton>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:weightSum="2"
+            android:layout_height="wrap_content">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/play"
+                android:drawableEnd="@drawable/ic_play"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/play"
+                android:textSize="18sp"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                app:backgroundTint="@color/secondary"
+                app:cornerRadius="5dp">
+            </com.google.android.material.button.MaterialButton>
+
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/speak"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:drawableEnd="@drawable/ic_speak"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/speak"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                app:backgroundTint="@color/child_color"
+                app:cornerRadius="5dp">
+            </com.google.android.material.button.MaterialButton>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

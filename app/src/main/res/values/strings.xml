@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">LearnChild</string>
+    <string name="title_activity_admin_dashboard">AdminDashboard</string>
+    <string name="title_home">Parents</string>
+    <string name="title_dashboard">Reports</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="play">Play</string>
+    <string name="speak">Speak</string>
+</resources>

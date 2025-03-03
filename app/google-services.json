@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "283758263075",
+    "project_id": "houses-77651",
+    "storage_bucket": "houses-77651.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283758263075:android:741b655a629cab6eed2a96",
+        "android_client_info": {
+          "package_name": "com.water.learnchild"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLEPmSlPssvva-Ym6nb8_rn4QvypBmsSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
