@@ -5,15 +5,25 @@ public class ChildLog {
     private String date;
     private String description;
     private Child  child;
+    private String imageURL;
 
     public ChildLog() {
     }
 
-    public ChildLog(String key, String date, String description, Child child) {
+    public ChildLog(String key, String date, String description, Child child,String imageURL) {
         this.key = key;
         this.date = date;
         this.description = description;
         this.child = child;
+        this.imageURL = imageURL;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getKey() {

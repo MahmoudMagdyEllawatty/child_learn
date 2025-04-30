@@ -78,7 +78,7 @@ public class ChildDataActivity extends AppCompatActivity {
             Picasso.get()
                     .load(imageURL)
                     .into(image);
-            if(gender.equals("boy")){
+            if(gender.equals("Boy")){
                 boy.setBackgroundResource(R.drawable.main_round_btn);
                 girl.setBackgroundResource(R.drawable.white_rounded);
             }else{

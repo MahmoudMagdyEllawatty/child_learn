@@ -41,6 +41,20 @@ public class SelectEnglishLearningTypeActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out); // Apply transition animation
         });
 
+
+        CardView btnEnglishWords = findViewById(R.id.words_card);
+        btnEnglishWords.setOnClickListener(v -> {
+            v.startAnimation(buttonClick); // Apply animation
+            startActivity(new Intent(SelectEnglishLearningTypeActivity.this, LearnEnglishWordsActivity.class));
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out); // Apply transition animation
+        });
+        ImageButton btnEnglishWords1 = findViewById(R.id.btnEnglishWord);
+        btnEnglishWords1.setOnClickListener(v -> {
+            v.startAnimation(buttonClick); // Apply animation
+            startActivity(new Intent(SelectEnglishLearningTypeActivity.this, LearnEnglishWordsActivity.class));
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out); // Apply transition animation
+        });
+
         // Arabic Learning Button
         CardView btnArabic = findViewById(R.id.numbers_card);
         btnArabic.setOnClickListener(v -> {

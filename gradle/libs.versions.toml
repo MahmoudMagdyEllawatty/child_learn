@@ -20,7 +20,8 @@ navigationUi = "2.8.6"
 gifVersion = "1.2.27"
 mlkitImage = "17.0.7"
 mlkitVision = "17.2.0"
-mlkitRecognition = "18.0.3"
+mlkitRecognition = "4.8.0"
+konfettiRef = "2.0.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -42,7 +43,8 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 gif = { group = "pl.droidsonroids.gif", name = "android-gif-drawable", version.ref = "gifVersion" }
 mlkit-image = {group="com.google.mlkit",name="image-labeling" , version.ref="mlkitImage"}
 mlkit-vision = {group="com.google.mlkit",name="vision-common" , version.ref="mlkitVision"}
-mlkit-recognition = {group="com.google.android.gms",name="play-services-mlkit-text-recognition" , version.ref="mlkitRecognition"}
+mlkit-recognition = {group="cz.adaptech.tesseract4android",name="tesseract4android" , version.ref="mlkitRecognition"}
+konfetti = { group="nl.dionsegijn",name="konfetti-xml",version.ref="konfettiRef"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -34,6 +34,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.water.learnchild.R;
 import com.water.learnchild.utils.Config;
 import com.water.learnchild.utils.LetterHelper;
+import com.water.learnchild.utils.LoadingHelper;
 import com.water.learnchild.utils.SharedData;
 
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ public class LearnArabicActivity extends AppCompatActivity
 
     Button speak;
     TextToSpeech t1;
+    String tts = "";
+    LoadingHelper loadingHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,7 @@ public class LearnArabicActivity extends AppCompatActivity
 //            toolbar.setTitle("Learn English Numbers");
 //        }
 
-
+        loadingHelper = new LoadingHelper(this);
 
 
 
@@ -99,7 +102,7 @@ public class LearnArabicActivity extends AppCompatActivity
             @Override
             public void onClick(android.view.View v) {
                 try {
-                    Config.addChildLog("Play Word "+letters.get(index).getCorrectPronounce());
+                    Config.addChildLog("Play Word "+letters.get(index).getCorrectPronounce(),"");
                     playAudio(letters.get(index).getUrl());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -111,6 +114,9 @@ public class LearnArabicActivity extends AppCompatActivity
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
+                if(t1.isSpeaking()){
+                    t1.stop();
+                }
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL
                         ,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -163,23 +169,19 @@ public class LearnArabicActivity extends AppCompatActivity
             }
         });
 
-        t1 = new TextToSpeech(this,this);
+
     }
 
     private void playAudio(String url) throws Exception
     {
-//        if(arabicLetters.isChecked()){
-//            killMediaPlayer();
-//
-//            mediaPlayer = new MediaPlayer();
-//            mediaPlayer.setDataSource(baseSpeakURL+url);
-//            mediaPlayer.prepare();
-//            mediaPlayer.start();
-//        }else if(englishLetters.isChecked()){
-//            t1.speak(url,TextToSpeech.QUEUE_FLUSH,null,"");
-//        }
-
-        t1.speak(url,TextToSpeech.QUEUE_FLUSH,null,"");
+        loadingHelper.showLoading("Loading...");
+        if(t1 !=null){
+            t1.stop();
+            t1.shutdown();
+        }
+        tts = url;
+        t1 = new TextToSpeech(this,this);
+        tts = url;
 
     }
 
@@ -263,7 +265,7 @@ public class LearnArabicActivity extends AppCompatActivity
 
 
     private void fillEnglishLetters(){
-        letters.add(new LetterHelper(R.mipmap.a_01,"أ أسد","ارنب"));
+        letters.add(new LetterHelper(R.mipmap.a_01,"أ أسد","اسد"));
         letters.add(new LetterHelper(R.mipmap.a_02,"ب بطة","بطه"));
         letters.add(new LetterHelper(R.mipmap.a_03,"ت تفاح","تفاح"));
         letters.add(new LetterHelper(R.mipmap.a_030,"ث ثعلب","ثعلب"));
@@ -294,16 +296,16 @@ public class LearnArabicActivity extends AppCompatActivity
     }
 
     private void fillEnglishNumbers(){
-        letters.add(new LetterHelper(R.mipmap.one,"One","one"));
-        letters.add(new LetterHelper(R.mipmap.two,"Two","two"));
-        letters.add(new LetterHelper(R.mipmap.three,"Three","three"));
-        letters.add(new LetterHelper(R.mipmap.four,"Four","four"));
-        letters.add(new LetterHelper(R.mipmap.five,"Five","five"));
-        letters.add(new LetterHelper(R.mipmap.six,"Six","six"));
-        letters.add(new LetterHelper(R.mipmap.seven,"Seven","seven"));
-        letters.add(new LetterHelper(R.mipmap.eight,"Eight","eight"));
-        letters.add(new LetterHelper(R.mipmap.nine,"Nine","nine"));
-        letters.add(new LetterHelper(R.mipmap.ten,"Ten","ten"));
+        letters.add(new LetterHelper(R.mipmap.one_1,"واحد","واحد"));
+        letters.add(new LetterHelper(R.mipmap.two_1,"اثنان","اثنان"));
+        letters.add(new LetterHelper(R.mipmap.three_1,"ثلاثة","ثلاثه"));
+        letters.add(new LetterHelper(R.mipmap.four_1,"أربعة","أربعه"));
+        letters.add(new LetterHelper(R.mipmap.five_1,"خمسة","خمسه"));
+        letters.add(new LetterHelper(R.mipmap.six_1,"ستة","سته"));
+        letters.add(new LetterHelper(R.mipmap.seven_1,"سبعة","سبعه"));
+        letters.add(new LetterHelper(R.mipmap.eight_1,"ثمانية","ثمانيه"));
+        letters.add(new LetterHelper(R.mipmap.nine_1,"تسعة","تسعه"));
+        letters.add(new LetterHelper(R.mipmap.ten_1,"عشرة","عشره"));
     }
 
 
@@ -342,16 +344,20 @@ public class LearnArabicActivity extends AppCompatActivity
 
     @Override
     public void onInit(int status) {
+        loadingHelper.dismissLoading();
         if(status == TextToSpeech.SUCCESS){
             int result = t1.setLanguage(new Locale("ar"));
 
             if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
                 Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show();
+            }else{
+                t1.speak(tts,TextToSpeech.QUEUE_FLUSH,null,"");
             }
 
         }else{
             Toast.makeText(this, "Init Failed", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     public class CustomView extends View {
@@ -486,7 +492,7 @@ public class LearnArabicActivity extends AppCompatActivity
         if(requestCode == 11 && resultCode == RESULT_OK){
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if(result.get(0).contains(letters.get(index).getCorrectPronounce())){
-                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Correctly");
+                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Correctly","");
                 Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
 //                try {
 //                    playAudio("31b99ffa0d41e1ebbc4854d74e7bf52d.mp3");
@@ -494,7 +500,7 @@ public class LearnArabicActivity extends AppCompatActivity
 //                    e.printStackTrace();
 //                }
             }else{
-                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Wrong");
+                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Wrong","");
                 Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
 //                try {
 //                    playAudio("83f8ca27e0f8363939778cab01be576b.mp3");

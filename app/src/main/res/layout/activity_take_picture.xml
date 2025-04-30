@@ -22,7 +22,7 @@
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
-        android:weightSum="2"
+        android:weightSum="3"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -49,6 +49,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Check Image" />
+
+        <Button
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:id="@+id/descibeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Describe Image" />
     </LinearLayout>
 
 

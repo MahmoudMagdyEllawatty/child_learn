@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,9 +34,10 @@ import com.water.learnchild.R;
 import com.water.learnchild.utils.Config;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Random;
 
-public class TakePicture extends AppCompatActivity {
+public class TakePicture extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private static final int CAMERA_REQUEST = 1;
     private static final int GALLERY_REQUEST = 2;
@@ -43,8 +47,11 @@ public class TakePicture extends AppCompatActivity {
 
     String selectedColor = "";
     String[] colors = new String[]{"Red","Black","Blue","Green","Yellow","White"};
-
-
+    Integer[] colorValues = new Integer[]{Color.RED,Color.BLACK,Color.BLUE,Color.GREEN,Color.YELLOW,Color.WHITE};
+    TextToSpeech t1;
+    Random random;
+    int randomNumber;
+    int selectedColorValue = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,23 +66,67 @@ public class TakePicture extends AppCompatActivity {
 
         captureButton.setOnClickListener(v -> openCamera());
         galleryButton.setOnClickListener(v -> openGallery());
+        t1 = new TextToSpeech(this,this);
 
-
-        Random random = new Random();
-        int randomNumber = random.nextInt(6);
+        random = new Random();
+        randomNumber = random.nextInt(6);
         selectedColor = colors[randomNumber];
+        selectedColorValue = colorValues[randomNumber];
 
         message.setText("Please,Take Picture for something "+selectedColor);
 
 
+        (findViewById(R.id.descibeButton))
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedImage != null) {
+                    InputImage image = InputImage.fromBitmap(selectedImage, 0);
+
+                    ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
+
+                    labeler.process(image)
+                            .addOnSuccessListener(labels -> {
+                                StringBuilder result = new StringBuilder();
+                                StringBuilder spokenText = new StringBuilder();
+                                for (ImageLabel label : labels) {
+                                    if(label.getConfidence() > 0.6) {
+                                        result.append(label.getText()).append(")\n");
+
+                                        spokenText.append("it may be ").append(label.getText()).append(" percentage").append("\n");
+                                    }
+                                }
+
+                                // Show result
+                                resultText.setText(result.toString());
+
+                                t1.speak(spokenText,TextToSpeech.QUEUE_FLUSH,null,"");
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(TakePicture.this, "Failed to label image", Toast.LENGTH_SHORT).show();
+                            });
+                } else {
+                    Toast.makeText(TakePicture.this, "Please select an image first.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         checkButton.setOnClickListener(v -> {
             if (selectedImage != null) {
-                boolean isColorDetected = containsColor(selectedImage, selectedColor);
+                boolean isColorDetected = containsColor(selectedImage, selectedColorValue);
                 if (isColorDetected) {
-                    Config.addChildLog("Select Picture for color: " + selectedColor +" Correctly");
+                    Config.addChildLog("Select Picture for color: " + selectedColor +" Correctly","");
                     resultText.setText(selectedColor + " object detected! ✅");
+
+                    random = new Random();
+                    randomNumber = random.nextInt(6);
+                    selectedColor = colors[randomNumber];
+
+                    message.setText("Please,Take Picture for something "+selectedColor);
+                    t1.speak("Please,Take Picture for something "+selectedColor,TextToSpeech.QUEUE_FLUSH,null,"");
+
                 } else {
-                    Config.addChildLog("Select Picture for color: " + selectedColor +" Wrong");
+                    Config.addChildLog("Select Picture for color: " + selectedColor +" Wrong","");
                     resultText.setText("No " + selectedColor + " object detected. ❌");
                 }
             } else {
@@ -119,45 +170,63 @@ public class TakePicture extends AppCompatActivity {
     }
 
 
-    private boolean containsColor(Bitmap bitmap, String color) {
-        int colorPixelCount = 0;
-        int totalPixels = bitmap.getWidth() * bitmap.getHeight();
+    private boolean containsColor(Bitmap bitmap, int targetColor) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
 
-        for (int y = 0; y < bitmap.getHeight(); y++) {
-            for (int x = 0; x < bitmap.getWidth(); x++) {
+        for (int x = 0; x < width; x += 10) {
+            for (int y = 0; y < height; y += 10) {
                 int pixel = bitmap.getPixel(x, y);
-                int red = (pixel >> 16) & 0xFF;
-                int green = (pixel >> 8) & 0xFF;
-                int blue = pixel & 0xFF;
-
-                // Check color based on the selected option
-                if (matchesColor(red, green, blue, color)) {
-                    colorPixelCount++;
+                if (isSimilarColor(pixel, targetColor)) {
+                    return true;
                 }
             }
         }
-
-        float colorPercentage = (colorPixelCount / (float) totalPixels) * 100;
-        return colorPercentage > 10; // Returns true if more than 10% of pixels match
+        return false;
     }
 
-    private boolean matchesColor(int red, int green, int blue, String targetColor) {
+    private boolean isSimilarColor(int color1, int color2) {
+        int r1 = Color.red(color1);
+        int g1 = Color.green(color1);
+        int b1 = Color.blue(color1);
+
+        int r2 = Color.red(color2);
+        int g2 = Color.green(color2);
+        int b2 = Color.blue(color2);
+
+        int diff = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+        return diff < 100; // هامش تقارب اللون
+    }
+    private boolean matchesColor(int color1, String targetColor,int tolerance) {
+        int red1 = Color.red(color1);
+        int green1 = Color.green(color1);
+        int blue1 = Color.blue(color1);
+
+        int color2 = 0;
         switch (targetColor.toLowerCase()) {
             case "red":
-                return red > 150 && green < 100 && blue < 100;
+                color2= Color.RED;
             case "black":
-                return red < 50 && green < 50 && blue < 50;
+                color2 = Color.BLACK;
             case "blue":
-                return blue > 150 && red < 100 && green < 100;
+                color2 = Color.BLUE;
             case "green":
-                return green > 150 && red < 100 && blue < 100;
+                color2 = Color.GREEN;
             case "yellow":
-                return red > 150 && green > 150 && blue < 100;
+                color2 = Color.YELLOW;
             case "white":
-                return red > 200 && green > 200 && blue > 200;
+                color2 = Color.WHITE;
             default:
-                return false; // No match
+                color2 = Color.RED;
         }
+        int red2 = Color.red(color2);
+        int green2 = Color.green(color2);
+        int blue2 = Color.blue(color2);
+
+        return Math.abs(red1 - red2) <= tolerance &&
+                Math.abs(green1 - green2) <= tolerance &&
+                Math.abs(blue1 - blue2) <= tolerance;
+
     }
 
     private void requestPermissions() {
@@ -166,4 +235,19 @@ public class TakePicture extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onInit(int status) {
+        if(status == TextToSpeech.SUCCESS){
+            int result = t1.setLanguage(Locale.US);
+
+            if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
+                Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show();
+            }else{
+                t1.speak("Please,Take Picture for something "+selectedColor,TextToSpeech.QUEUE_FLUSH,null,"");
+            }
+
+        }else{
+            Toast.makeText(this, "Init Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

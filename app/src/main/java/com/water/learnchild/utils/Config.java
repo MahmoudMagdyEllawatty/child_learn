@@ -18,12 +18,13 @@ public class Config {
     public static final String SCREEN_TIME_NODE = "screen_times";
     public static final String CHILD_LOG_NODE = "logs";
 
-    public static void addChildLog(String details){
+    public static void addChildLog(String details,String imageURL){
         ChildLog childLog = new ChildLog(
                 "",
                 new SimpleDateFormat("dd/MM/yyyy H:m:s", Locale.ENGLISH).format(Calendar.getInstance().getTime()),
                 details,
-                SharedData.currentChild
+                SharedData.currentChild,
+                imageURL
         );
 
         new ChildLogController().Save(childLog, new ChildLogCallBack() {

@@ -31,6 +31,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.water.learnchild.R;
 import com.water.learnchild.utils.Config;
 import com.water.learnchild.utils.LetterHelper;
+import com.water.learnchild.utils.LoadingHelper;
 import com.water.learnchild.utils.SharedData;
 
 import java.util.ArrayList;
@@ -66,6 +67,8 @@ public class LearnEnglishActivity extends AppCompatActivity
 
     Button speak;
     TextToSpeech t1;
+    String tts = "";
+    LoadingHelper loadingHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +82,7 @@ public class LearnEnglishActivity extends AppCompatActivity
 //            toolbar.setTitle("Learn English Numbers");
 //        }
 
-
+        loadingHelper = new LoadingHelper(this);
 
 
 
@@ -96,7 +99,7 @@ public class LearnEnglishActivity extends AppCompatActivity
             @Override
             public void onClick(android.view.View v) {
                 try {
-                    Config.addChildLog("Play Word "+letters.get(index).getCorrectPronounce()+" Correctly");
+                    Config.addChildLog("Play Word "+letters.get(index).getCorrectPronounce()+" Correctly","");
                     playAudio(letters.get(index).getUrl());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -108,6 +111,9 @@ public class LearnEnglishActivity extends AppCompatActivity
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
+                if(t1.isSpeaking()){
+                    t1.stop();
+                }
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL
                         ,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -158,23 +164,19 @@ public class LearnEnglishActivity extends AppCompatActivity
             }
         });
 
-        t1 = new TextToSpeech(this,this);
+
     }
 
     private void playAudio(String url) throws Exception
     {
-//        if(arabicLetters.isChecked()){
-//            killMediaPlayer();
-//
-//            mediaPlayer = new MediaPlayer();
-//            mediaPlayer.setDataSource(baseSpeakURL+url);
-//            mediaPlayer.prepare();
-//            mediaPlayer.start();
-//        }else if(englishLetters.isChecked()){
-//            t1.speak(url,TextToSpeech.QUEUE_FLUSH,null,"");
-//        }
-
-        t1.speak(url,TextToSpeech.QUEUE_FLUSH,null,"");
+        loadingHelper.showLoading("Loading...");
+        if(t1 !=null){
+            t1.stop();
+            t1.shutdown();
+        }
+        tts = url;
+        t1 = new TextToSpeech(this,this);
+        tts = url;
 
     }
 
@@ -240,19 +242,6 @@ public class LearnEnglishActivity extends AppCompatActivity
         mPaint.setStrokeWidth(100);
 
 
-//        Display currentDisplay = getWindowManager().getDefaultDisplay();
-//        float dw = currentDisplay.getWidth();
-//        float dh = currentDisplay.getHeight();
-//
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),letters.get(index))
-//                .copy(Bitmap.Config.ARGB_8888, true);
-//        canvas = new Canvas(bitmap);
-//        paint = new Paint();
-//        paint.setColor(Color.BLACK);
-//        paint.setStrokeWidth(20);
-//        imageView.setImageBitmap(bitmap);
-//
-//        imageView.setOnTouchListener(this);
 
     }
 
@@ -335,11 +324,14 @@ public class LearnEnglishActivity extends AppCompatActivity
 
     @Override
     public void onInit(int status) {
+        loadingHelper.dismissLoading();
         if(status == TextToSpeech.SUCCESS){
             int result = t1.setLanguage(Locale.US);
 
             if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
                 Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show();
+            }else{
+                t1.speak(tts,TextToSpeech.QUEUE_FLUSH,null,"");
             }
 
         }else{
@@ -479,7 +471,7 @@ public class LearnEnglishActivity extends AppCompatActivity
         if(requestCode == 11 && resultCode == RESULT_OK){
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if(result.get(0).contains(letters.get(index).getCorrectPronounce())){
-                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Correctly");
+                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Correctly","");
                 Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
 //                try {
 //                    playAudio("31b99ffa0d41e1ebbc4854d74e7bf52d.mp3");
@@ -487,7 +479,7 @@ public class LearnEnglishActivity extends AppCompatActivity
 //                    e.printStackTrace();
 //                }
             }else{
-                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Wrong");
+                Config.addChildLog("Speak Word "+letters.get(index).getCorrectPronounce()+" Wrong","");
                 Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
 //                try {
 //                    playAudio("83f8ca27e0f8363939778cab01be576b.mp3");

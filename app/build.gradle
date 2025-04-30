@@ -50,6 +50,7 @@ dependencies {
     implementation libs.gif
     implementation libs.mlkit.image
     implementation libs.mlkit.vision
+    implementation libs.konfetti
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

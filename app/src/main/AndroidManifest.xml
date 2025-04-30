@@ -25,6 +25,12 @@
         android:theme="@style/Theme.LearnChild"
         tools:targetApi="31">
         <activity
+            android:name=".activities.child.LearnArabicWordsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.child.LearnEnglishWordsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.admin.ui.dashboard.ReportActivity"
             android:exported="false" />
         <activity

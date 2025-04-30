@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 loadingHelper.showLoading("Validating Data");
                 if(SharedData.type == 1){ // Administrator
+                    loadingHelper.dismissLoading();
                     if(email.getText().toString().equals("admin@app.com") && password.getText().toString().equals("123456")){
                         Intent intent = new Intent(LoginActivity.this, AdminDashboard.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
